@@ -12,7 +12,8 @@ mv app/locale/$1/messages.bak.1 app/locale/$1/messages.bak.2
 mv app/locale/$1/messages.bak app/locale/$1/messages.bak.1
 cp app/locale/$1/messages.po app/locale/$1/messages.bak
 mv app/locale/$1/messages.po app/locale/$1/0.po
-find . -iname "*.php" -or -iname "*.tpl" -or -iname "*.conf"  | xargs xgettext --force-po -o app/locale/$1/1.po -k_ -k_p -k_t --from-code=utf-8
+find . -iname "*.php" -or -iname "*.tpl"  | xargs xgettext --force-po -o app/locale/$1/1.po -k_ -k_p -k_t --from-code=utf-8  --language=PHP
+find . -iname "*.conf"  | xargs xgettext --force-po -o app/locale/$1/1.po -j -k_ -k_p -k_t --from-code=utf-8 --language=C
 clear
 msgmerge app/locale/$1/0.po app/locale/$1/1.po > app/locale/$1/messages.po
 rm app/locale/$1/0.po
