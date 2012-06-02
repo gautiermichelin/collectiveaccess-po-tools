@@ -1,7 +1,40 @@
 #!/bin/bash
-echo '' > app/locale/fr_FR/new_messages.po
-rm app/locale/fr_FR/old_messages.po
-mv app/locale/fr_FR/messages.po app/locale/fr_FR/old_messages.po
-find . -iname "*.php" -or -iname "*.conf" -or -iname "*.tpl" | xargs xgettext --force-po -o app/locale/fr_FR/new_messages.po -k_ -k_p -k_t --language=php --from-code=utf-8
-msgmerge app/locale/fr_FR/old_messages.po app/locale/fr_FR/new_messages.po > app/locale/fr_FR/messages.po
-rm app/locale/fr_FR/new_messages.po
+# this script folder must be installed inside your collectiveaccess,
+# and called from the ca root directory (the one containing setup.php)
+# script syntax : ./ca_po_tools/update.sh locale_LOCALE
+if [ $# = 1 ]
+then
+if (test -e "./app/locale/$1/messages.po")
+then
+rm app/locale/$1/messages.bak.3
+mv app/locale/$1/messages.bak.2 app/locale/$1/messages.bak.3
+mv app/locale/$1/messages.bak.1 app/locale/$1/messages.bak.2
+mv app/locale/$1/messages.bak app/locale/$1/messages.bak.1
+cp app/locale/$1/messages.po app/locale/$1/messages.bak
+mv app/locale/$1/messages.po app/locale/$1/0.po
+find . -iname "*.php" -or -iname "*.tpl" -or -iname "*.conf"  | xargs xgettext --force-po -o app/locale/$1/1.po -k_ -k_p -k_t --from-code=utf-8
+clear
+msgmerge app/locale/$1/0.po app/locale/$1/1.po > app/locale/$1/messages.po
+rm app/locale/$1/0.po
+rm app/locale/$1/1.po
+echo ""
+echo "po_update.sh"
+echo "------------"
+echo "CA locale messages updated : app/locale/$1"
+echo ""
+else
+echo ""
+echo "po_update.sh"
+echo "------------"
+echo "This script must be called from the ca root directory (the one containing setup.php)"
+echo "ERROR : no messages.po in ./app/locale/$1"
+echo ""
+fi
+else
+echo ""
+echo "po_update.sh"
+echo "------------"
+echo "script syntax : ./ca_po_tools/update.sh locale_LOCALE"
+echo "with locale_LOCALE as your locale code, eg fr_FR"
+echo ""
+fi
