@@ -35,7 +35,7 @@ else
 echo ""
 echo "po_update.sh"
 echo "------------"
-echo "script syntax : ./ca_po_tools/update.sh locale_LOCALE"
+echo "script syntax : ../collectiveaccess-po-tools/update.sh locale_LOCALE"
 echo "with locale_LOCALE as your locale code, eg fr_FR"
 echo ""
 fi
