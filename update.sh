@@ -11,11 +11,19 @@ mv app/locale/$1/messages.bak.2 app/locale/$1/messages.bak.3
 mv app/locale/$1/messages.bak.1 app/locale/$1/messages.bak.2
 mv app/locale/$1/messages.bak app/locale/$1/messages.bak.1
 cp app/locale/$1/messages.po app/locale/$1/messages.bak
-mv app/locale/$1/messages.po app/locale/$1/0.po
-find . -iname "*.php" -or -iname "*.tpl"  | xargs xgettext --force-po -o app/locale/$1/1.po -k_ -k_p -k_t --from-code=utf-8  --language=PHP
-find . -iname "*.conf"  | xargs xgettext --force-po -o app/locale/$1/1.po -j -k_ -k_p -k_t --from-code=utf-8 --language=C
-clear
-msgmerge app/locale/$1/0.po app/locale/$1/1.po > app/locale/$1/messages.po
+cp app/locale/$1/messages.po existing.po
+
+echo '' > messages.po # xgettext needs that file, and we need it empty
+find . -iname "*.php" -or -iname "*.tpl" | xgettext --keyword=_ --keyword=_t --keyword=_p -j --from-code=utf-8  --language=PHP -f -
+find . -iname "*.conf"  | xargs xgettext -k_ -k_p -k_t -j --from-code=utf-8 --language=C -f -
+
+msgmerge -N existing.po messages.po > new.po
+mv new.po existing.po
+
+rm messages.po
+
+#clear
+mv existing.po app/locale/$1/messages.po
 rm app/locale/$1/0.po
 rm app/locale/$1/1.po
 echo ""
